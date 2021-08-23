@@ -16,9 +16,9 @@
       <recommend-view :recommends="recommends"/>
       <!--本周流行-->
       <feature-view/>
-      <tab-control class="tab-control"
-                   :titles="['流行','新款','精选']"
-                   @tabClick='tabClick'/>
+      <tab-control :titles="['流行','新款','精选']"
+                   @tabClick='tabClick'
+                   ref="tabControl"/>
       <!--商品展示-->
       <goods-list :goods="showGoods"/>
     </scroll>
@@ -40,6 +40,7 @@
   import BackTop from "../../components/content/backTop/BackTop";
 
   import {getHomeMultidata, getHomeGoods} from "../../network/home";
+  import {debounce} from "../../common/utils"
 
 
   export default {
@@ -64,7 +65,8 @@
           'sell': {page: 0, list: []},
         },
         currentType: 'pop',
-        isShowBackTop: false
+        isShowBackTop: false,
+        tabOffsetTop: 0
       }
     },
     computed: {
@@ -81,6 +83,16 @@
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
     },
+    mounted() {
+      // 1.监听item中图片加载完成
+      const refresh = debounce(this.$refs.scroll.refresh, 200)
+      this.$bus.$on('itemImageLoad', () => {
+        refresh()
+      })
+
+      // 2.tabOffsetTop赋值
+      this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
+    },
     methods: {
       /*事件监听相关方法*/
       tabClick(index) {
@@ -96,15 +108,16 @@
             break
         }
       },
-      backClick(){
-        this.$refs.scroll.scrollTo(0,0)
+      backClick() {
+        this.$refs.scroll.scrollTo(0, 0)
       },
       contentScroll(position) {
         this.isShowBackTop = (-position.y) > 1000
       },
-      loadMore(){
+      loadMore() {
         this.getHomeGoods(this.currentType)
       },
+
 
       /*网络请求相关方法*/
       getHomeMultidata() {
@@ -120,6 +133,7 @@
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page += 1
 
+          //完成上拉加载更多
           this.$refs.scroll.finishPullUp()
         })
       }
@@ -145,11 +159,11 @@
     z-index: 9;
   }
 
-  .tab-control {
-    position: sticky;
-    top: 44px;
-    z-index: 9;
-  }
+  /*.tab-control {*/
+  /*  position: sticky;*/
+  /*  top: 44px;*/
+  /*  z-index: 9;*/
+  /*}*/
 
   /*.content{*/
   /*  !*height: 300px;*!*/

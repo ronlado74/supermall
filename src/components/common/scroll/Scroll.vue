@@ -44,23 +44,29 @@
       })
 
       //2.监听滚动位置
-      this.scroll.on('scroll', (postion) => {
-        // console.log(postion);
-        this.$emit('scroll', postion)
-      })
-      // this.scroll.scrollTo(0,0)
+      if(this.probeType ===2 || this.probeType ===3){
+        this.scroll.on('scroll', (postion) => {
+          // console.log(postion);
+          this.$emit('scroll', postion)
+        })
+      }
 
-      //3. 监听上拉加载
-      this.scroll.on('pullingUp', () => {
-        this.$emit('pullingUp')
-      })
+      //3. 监听滚动到底部
+      if(this.pullUpLoad){
+        this.scroll.on('pullingUp', () => {
+          this.$emit('pullingUp')
+        })
+      }
     },
     methods:{
       scrollTo(x, y, time=300) {
-        this.scroll.scrollTo(0, 0, time)
+        this.scroll && this.scroll.scrollTo && this.scroll.scrollTo(0, 0, time)
       },
       finishPullUp(){
         this.scroll.finishPullUp()
+      },
+      refresh() {
+        this.scroll && this.scroll.refresh()
       }
     }
   }
