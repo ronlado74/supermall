@@ -11,17 +11,6 @@
 
   export default {
     name: "Scroll",
-    data() {
-      return {
-        // scroll:{
-        //   type:Object,
-        //   default() {
-        //     return {}
-        //   }
-        // }
-        scroll: null
-      }
-    },
     //接收父组件来的值
     props:{
       probeType:{
@@ -31,6 +20,16 @@
       pullUpLoad: {
         type: Boolean,
         default: false
+      }
+    },
+    data() {
+      return {
+        scroll:{
+          type:Object,
+          default() {
+            return {}
+          }
+        }
       }
     },
     mounted() {
@@ -59,14 +58,14 @@
       }
     },
     methods:{
-      scrollTo(x, y, time=300) {
-        this.scroll && this.scroll.scrollTo && this.scroll.scrollTo(0, 0, time)
-      },
-      finishPullUp(){
-        this.scroll.finishPullUp()
-      },
       refresh() {
-        this.scroll && this.scroll.refresh()
+        this.scroll && this.scroll.refresh && this.scroll.refresh()
+      },
+      finishPullUp() {
+        this.scroll && this.scroll.finishPullUp && this.scroll.finishPullUp()
+      },
+      scrollTo(x, y, time) {
+        this.scroll && this.scroll.scrollTo && this.scroll.scrollTo(x, y, time)
       }
     }
   }
