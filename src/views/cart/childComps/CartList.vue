@@ -35,7 +35,7 @@
   }
 
   .content {
-    height: 100vh;
+    height: calc(100vh - 44px - 49px - 40px);
     overflow: hidden;
   }
 </style>

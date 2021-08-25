@@ -233,7 +233,7 @@
   }
 
   .content {
-    height: calc(100% - 44px);
+    height: calc(100vh - 44px);
     overflow: hidden;
   }
 

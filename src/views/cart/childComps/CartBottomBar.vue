@@ -40,11 +40,12 @@
 
 <style scoped>
   .bottom-bar{
-    position: relative;
+    position: fixed;
     display: flex;
     height: 40px;
     background-color: #eee;
     line-height: 40px;
+    width: 100%;
   }
 
   .check-content{
