@@ -27,8 +27,8 @@
   import TabContentDetail from './childComps/TabContentDetail'
 
   import {getCategory, getSubcategory, getCategoryDetail} from "../../network/category";
-  import {POP, SELL, NEW} from "@/common/const";
-  import {tabControlMixin} from "@/common/mixin";
+  import {POP, SELL, NEW} from "../../common/const";
+  import {tabControlMixin} from "../../common/mixin";
 
   export default {
     name: "Category",
@@ -44,9 +44,8 @@
     data() {
       return {
         categories: [],
-        categoryData: {
-        },
-        currentIndex: -1
+        categoryData: {},
+        currentIndex: -1,
       }
     },
     created() {
@@ -120,9 +119,11 @@
   }
 
   .nav-bar {
+    position: relative;
     background-color: var(--color-tint);
     font-weight: 700;
     color: #fff;
+    z-index: 100;
   }
 
   .content {

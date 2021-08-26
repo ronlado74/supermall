@@ -6,9 +6,9 @@
               ref="scroll"
               @scroll="contentScroll"
               :probe-type="3">
-<!--        <ul>-->
-<!--          <li v-for="item in $store.state.cartLit">{{item}}</li>-->
-<!--        </ul>-->
+        <!--        <ul>-->
+        <!--          <li v-for="item in $store.state.cartLit">{{item}}</li>-->
+        <!--        </ul>-->
         <detail-swiper :top-images="topImages"/>
         <detail-base-info :goods="goods"/>
         <detail-shop-info :shop="shop"/>
@@ -19,6 +19,8 @@
       </scroll>
       <back-top @click.native="backClick" v-show="isShowBackTop"/>
       <detail-bottom-bar @addCart="addTocart"/>
+
+      <!--<toast :message="message" :show="show"/>-->
     </div>
   </div>
 </template>
@@ -35,11 +37,14 @@
 
   import Scroll from "../../components/common/scroll/Scroll";
   import GoodsList from "../../components/content/goods/GoodsList";
-  import BackTop from "../../components/content/backTop/BackTop";
+  // import BackTop from "../../components/content/backTop/BackTop";
+  // import Toast from "../../components/common/toast/Toast";
 
   import {getDetail, getRecommend, Goods, Shop, GoodsParam} from "../../network/detail";
   import {debounce} from "../../common/utils";
-  import {itemListenerMixin,backTopMixin} from "../../common/mixin";
+  import {itemListenerMixin, backTopMixin} from "../../common/mixin";
+
+  import {mapActions} from 'vuex'
 
   export default {
     name: "Detail",
@@ -53,7 +58,8 @@
       DetailCommentInfo,
       DetailBottomBar,
       Scroll,
-      GoodsList
+      GoodsList,
+      // Toast
     },
     mixins: [itemListenerMixin, backTopMixin],
     data() {
@@ -70,7 +76,8 @@
         themeTopYs: [],
         getThemeTopY: null,
         currentIndex: 0,
-
+        // message: '',
+        // show: false
       }
     },
     created() {
@@ -156,6 +163,7 @@
       this.$bus.$off('itemImageLoad', this.itemImgListener)
     },
     methods: {
+      ...mapActions(['addCart']),
       imageLoad() {
         this.$refs.scroll.refresh()
         this.getThemeTopY()
@@ -181,9 +189,9 @@
             this.currentIndex = i;
             this.$refs.nav.currentIndex = this.currentIndex
           }*/
-          if(this.currentIndex !== i
+          if (this.currentIndex !== i
             && i < length - 1 && positionY >= this.themeTopYs[i]
-            && positionY < this.themeTopYs[i + 1]){
+            && positionY < this.themeTopYs[i + 1]) {
             this.currentIndex = i;
             this.$refs.nav.currentIndex = this.currentIndex
           }
@@ -195,7 +203,7 @@
         //决定tabControl是否吸顶(position: fixed)
         this.isTabFixed = (-position.y) > this.tabOffsetTop
       },
-      addTocart(){
+      addTocart() {
         //1.获取购物车需要展示的信息
         const product = {}
         product.image = this.topImages[0];
@@ -208,8 +216,23 @@
         //2.将商品添加到购物车里面
         // this.$store.state.cartLit.push(product)
         // this.$store.commit('addCart', product)
-        this.$store.dispatch('addCart', product)
+
+        // this.$store.dispatch('addCart', product).then(res => {
+        //   console.log(res);
+        // })
+        this.addCart(product).then(res => {
+          // this.show = true;
+          // this.message = res;
+          //
+          // setTimeout(() => {
+          //   this.show = false
+          //   this.message = ''
+          // }, 1500)
+          this.$toast.show(res,2000)
+        })
       }
+
+      //3.添加到购物车成功
     },
   }
 </script>

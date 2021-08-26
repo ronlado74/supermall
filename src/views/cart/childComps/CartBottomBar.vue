@@ -1,7 +1,9 @@
 <template>
   <div class="bottom-bar">
     <div class="check-content">
-      <check-button class="check-button"/>
+      <check-button :is-checked="isSelectAll"
+                    class="check-button"
+                    @click.native="checkClick"/>
       <span>全选</span>
     </div>
 
@@ -9,7 +11,7 @@
       合计:{{totalPrice}}
     </div>
 
-    <div class="calculate">
+    <div class="calculate" @click="calcClick">
       去计算({{checkLength}})
     </div>
   </div>
@@ -17,6 +19,7 @@
 
 <script>
   import CheckButton from "../../../components/content/checkButton/CheckButton";
+  import {mapGetters} from 'vuex'
 
   export default {
     name: "CartBottonBar",
@@ -24,6 +27,7 @@
       CheckButton
     },
     computed: {
+      ...mapGetters(['cartList']),
       totalPrice() {
         return '￥' + this.$store.getters.cartList.filter(item => {
           return item.checked
@@ -33,6 +37,25 @@
       },
       checkLength(){
         return this.$store.getters.cartList.filter(item => item.checked).length
+      },
+      isSelectAll(){
+        // return !(this.cartList.filter(item => !item.checked).length)
+        if (this.cartList.length === 0) return false
+        return !this.cartList.find(item => !item.checked)
+      }
+    },
+    methods: {
+      checkClick(){
+        if(this.isSelectAll){ //全部选中
+          this.cartList.forEach(item => item.checked = false)
+        }else { //部分或者全部不选中
+          this.cartList.forEach(item => item.checked = true)
+        }
+      },
+      calcClick(){
+        if(!this.isSelectAll){
+          this.$toast.show("请选择购买的商品",2000)
+        }
       }
     }
   }
